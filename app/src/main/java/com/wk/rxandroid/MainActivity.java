@@ -5,10 +5,15 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import com.jakewharton.rxbinding.widget.RxTextView;
+import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,27 +46,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Observable testObservable = Observable.from(names);
-        Observable testObservable2 = Observable.from(names).map(
-                s -> s.toUpperCase()
+        Observable<TextViewTextChangeEvent> usernameText = RxTextView.textChangeEvents((TextView) findViewById(R.id.edtUserName));
+        usernameText.subscribe(
+                s -> Log.d("wenchao", "[typed]" + s.text())
         );
-
-        testObservable.subscribe(
-                o -> printMethod(o)
-        );
-
-        testObservable2.subscribe(
-                o -> printMethod2(o)
-        );
-    }
-
-    private void printMethod2(Object o) {
-        Log.d("wenchao", "Subscribe2 " + o);
-
-    }
-
-    private void printMethod(Object o) {
-        Log.d("wenchao", "Subscribe1 " + o);
     }
 
 
