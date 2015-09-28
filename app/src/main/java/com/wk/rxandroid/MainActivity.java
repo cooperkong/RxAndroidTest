@@ -10,13 +10,21 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.Arrays;
+import java.util.List;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Action1;
 
 public class MainActivity extends AppCompatActivity {
+    List<String> names = Arrays.asList("Didiet", "Doni", "Asep", "Reza",
+            "Sari", "Rendi", "Akbar");
 
+    public static String currentThreadName() {
+        return Thread.currentThread().getName();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,13 +41,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Observable testObservable = Observable.create(new Observable.OnSubscribe<String>() {
-            @Override
-            public void call(Subscriber<? super String> subscriber) {
-                subscriber.onNext("Hello world");
-                subscriber.onCompleted();
-            }
-        });
+        Observable testObservable = Observable.just("lol", 1);
 
         testObservable.subscribe(
                 o -> printMethod(o)
