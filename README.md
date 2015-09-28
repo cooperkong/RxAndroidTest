@@ -1,2 +1,1 @@
 # RxAndroidTest
-RxAndroid learning
