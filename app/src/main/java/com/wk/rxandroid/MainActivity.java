@@ -44,6 +44,15 @@ public class MainActivity extends AppCompatActivity {
         testObservable.subscribe(
                 o -> printMethod(o)
         );
+
+        testObservable.subscribe(
+                o -> printMethod2(o)
+        );
+    }
+
+    private void printMethod2(Object o) {
+        Log.d("wenchao", "Subscribe2 " + o);
+
     }
 
     private void printMethod(Object o) {
