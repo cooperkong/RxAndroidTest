@@ -41,13 +41,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Observable testObservable = Observable.just("lol", 1);
+        Observable testObservable = Observable.from(names);
+        Observable testObservable2 = Observable.from(names).map(
+                s -> s.toUpperCase()
+        );
 
         testObservable.subscribe(
                 o -> printMethod(o)
         );
 
-        testObservable.subscribe(
+        testObservable2.subscribe(
                 o -> printMethod2(o)
         );
     }
@@ -58,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void printMethod(Object o) {
-        Log.d("wenchao", "Subscribe " + o);
+        Log.d("wenchao", "Subscribe1 " + o);
     }
 
 
