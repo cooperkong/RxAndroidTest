@@ -58,15 +58,18 @@ public class MainActivity extends AppCompatActivity {
                 );
         Observable<Boolean> usernameValid = RxTextView.textChanges((TextView) findViewById(R.id.edtUserName)).map(
                 e -> e.length() > 2
-        );
+        ).distinctUntilChanged();
         Observable<Boolean> emailValid = RxTextView.textChanges((TextView) findViewById(R.id.edtEmail)).map(
                 e -> e.length() > 2
-        );
+        ).distinctUntilChanged();
         Observable<Boolean> combined = Observable.combineLatest(usernameValid, emailValid,
                 (a,b) -> a && b);
 
         combined.subscribe(
-                result -> registerBtn.setEnabled(result)
+                result -> {
+                    registerBtn.setEnabled(result);
+                    Log.d("wenchao", "called "+ result);
+                }
         );
 
     }
