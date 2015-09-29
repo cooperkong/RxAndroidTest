@@ -47,7 +47,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Observable<TextViewTextChangeEvent> usernameText = RxTextView.textChangeEvents((TextView) findViewById(R.id.edtUserName));
-        usernameText.subscribe(
+        usernameText.filter(
+            s -> s.text().length() > 2
+        )
+                .subscribe(
                 s -> Log.d("wenchao", "[typed]" + s.text())
         );
     }
