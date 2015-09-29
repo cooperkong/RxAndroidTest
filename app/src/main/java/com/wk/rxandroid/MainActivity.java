@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -30,13 +31,15 @@ public class MainActivity extends AppCompatActivity {
     public static String currentThreadName() {
         return Thread.currentThread().getName();
     }
+
+    private Button registerBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        registerBtn = (Button) findViewById(R.id.btnRegister);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,14 +48,27 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-
+        Observable<TextViewTextChangeEvent> emailText = RxTextView.textChangeEvents((TextView) findViewById(R.id.edtEmail));
         Observable<TextViewTextChangeEvent> usernameText = RxTextView.textChangeEvents((TextView) findViewById(R.id.edtUserName));
         usernameText.filter(
             s -> s.text().length() > 2
         )
                 .subscribe(
-                s -> Log.d("wenchao", "[typed]" + s.text())
+                        s -> Log.d("wenchao", "[typed]" + s.text())
+                );
+        Observable<Boolean> usernameValid = RxTextView.textChanges((TextView) findViewById(R.id.edtUserName)).map(
+                e -> e.length() > 2
         );
+        Observable<Boolean> emailValid = RxTextView.textChanges((TextView) findViewById(R.id.edtEmail)).map(
+                e -> e.length() > 2
+        );
+        Observable<Boolean> combined = Observable.combineLatest(usernameValid, emailValid,
+                (a,b) -> a && b);
+
+        combined.subscribe(
+                result -> registerBtn.setEnabled(result)
+        );
+
     }
 
 
