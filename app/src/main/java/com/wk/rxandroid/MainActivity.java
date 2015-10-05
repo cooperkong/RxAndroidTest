@@ -19,10 +19,16 @@ import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 import java.util.Arrays;
 import java.util.List;
 
+import api.ApiService;
 import rx.Observable;
+import rx.Observer;
+import rx.Scheduler;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends AppCompatActivity {
     List<String> names = Arrays.asList("Didiet", "Doni", "Asep", "Reza",
@@ -71,6 +77,30 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("wenchao", "called "+ result);
                 }
         );
+
+        ApiService api = new ApiService();
+        Subscription subscription = api.getGitHubUser("cooperkong")
+                .map(
+                        user -> Log.d("wenchao", user.login)
+                )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Integer>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+
+                    }
+                });
 
     }
 
