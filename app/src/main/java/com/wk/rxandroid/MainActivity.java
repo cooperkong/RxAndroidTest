@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import api.ApiService;
+import mvp.MainPresenter;
 import rx.Observable;
 import rx.Observer;
 import rx.Scheduler;
@@ -31,10 +32,8 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-public class MainActivity extends AppCompatActivity {
-    List<String> names = Arrays.asList("Didiet", "Doni", "Asep", "Reza",
-            "Sari", "Rendi", "Akbar");
-
+public class MainActivity extends AppCompatActivity implements mvp.View{
+    private MainPresenter presenter;
     public static String currentThreadName() {
         return Thread.currentThread().getName();
     }
@@ -48,13 +47,12 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         registerBtn = (Button) findViewById(R.id.btnRegister);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        fab.setOnClickListener(
+                view ->
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+                        .setAction("Action", null).show()
+
+        );
         Observable<TextViewTextChangeEvent> emailText = RxTextView.textChangeEvents((TextView) findViewById(R.id.edtEmail));
         Observable<TextViewTextChangeEvent> usernameText = RxTextView.textChangeEvents((TextView) findViewById(R.id.edtUserName));
         usernameText.filter(
@@ -79,20 +77,11 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        ApiService api = new ApiService();
-        api.getGitHubUser("cooperkong")
-                .map(
-                        user -> Log.d("wenchao", user.login)
-                )
-                .compose(applySchedulers())
-                .subscribe();
+        presenter = new MainPresenter(this);
+        presenter.fetchData();
 
     }
 
-    <T> Observable.Transformer<T, T> applySchedulers() {
-        return observable -> observable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -113,5 +102,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void setName(String username) {
+        TextView e = (TextView) findViewById(R.id.edtEmail);
+        e.setText(username);
     }
 }
