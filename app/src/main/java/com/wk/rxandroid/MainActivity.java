@@ -23,6 +23,7 @@ import api.ApiService;
 import rx.Observable;
 import rx.Observer;
 import rx.Scheduler;
+import rx.Single;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -79,32 +80,19 @@ public class MainActivity extends AppCompatActivity {
         );
 
         ApiService api = new ApiService();
-        Subscription subscription = api.getGitHubUser("cooperkong")
+        api.getGitHubUser("cooperkong")
                 .map(
                         user -> Log.d("wenchao", user.login)
                 )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Integer>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Integer integer) {
-
-                    }
-                });
+                .compose(applySchedulers())
+                .subscribe();
 
     }
 
-
+    <T> Observable.Transformer<T, T> applySchedulers() {
+        return observable -> observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
