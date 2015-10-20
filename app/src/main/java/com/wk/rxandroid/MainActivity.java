@@ -1,5 +1,6 @@
 package com.wk.rxandroid;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -15,11 +16,13 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
+import com.wk.rxandroid.databinding.ContentMainBinding;
 
 import java.util.Arrays;
 import java.util.List;
 
 import api.ApiService;
+import api.User;
 import mvp.MainPresenter;
 import rx.Observable;
 import rx.Observer;
@@ -78,7 +81,12 @@ public class MainActivity extends AppCompatActivity implements mvp.View{
         );
 
         presenter = new MainPresenter(this);
-        presenter.fetchData();
+//        presenter.fetchData();
+
+
+        ContentMainBinding binding = DataBindingUtil.setContentView(this, R.layout.content_main);
+        User user = new User("Test", "User");
+        binding.setUser(user);
 
     }
 
